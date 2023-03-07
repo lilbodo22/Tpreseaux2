@@ -1,0 +1,26 @@
+Utilisateur : 
+import java.io.Serializable;
+
+public class Utilisateur implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
+    private String nom;
+    private String motDePasse;
+    
+    public Utilisateur(String nom, String motDePasse) {
+        this.nom = nom;
+        this.motDePasse = motDePasse;
+    }
+    
+    public String getNom() {
+        return nom;
+    }
+    
+    public String getMotDePasse() {
+        return motDePasse;
+    }
+    
+    public void setMotDePasse(String motDePasse) {
+        this.motDePasse = motDePasse;
+    }
+}

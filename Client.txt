@@ -1,0 +1,36 @@
+Client : 
+import java.io.*;
+import java.net.*;
+import java.util.Scanner;
+
+public class Client {
+    private static final String SERVEUR = "localhost";
+    private static final int PORT = 1234;
+    
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+        try (Scanner scanner = new Scanner(System.in)) {
+            System.out.print("Nom d'utilisateur: ");
+            String nom = scanner.nextLine();
+            
+            System.out.print("Mot de passe: ");
+            String motDePasse = scanner.nextLine();
+            
+            Utilisateur utilisateur = new Utilisateur(nom, motDePasse);
+            
+            Socket socket = new Socket(SERVEUR, PORT);
+            System.out.println("Connexion établie avec le serveur");
+            
+            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+            
+            out.writeObject(utilisateur);
+            
+            String reponse = (String) in.readObject();
+            System.out.println(reponse);
+            
+            out.close();
+            in.close();
+            socket.close();
+        }
+    }
+}

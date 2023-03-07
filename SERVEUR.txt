@@ -1,0 +1,71 @@
+serveur : 
+import java.io.*;
+import java.net.*;
+import java.util.*;
+
+public class Serveur {
+    private static final int PORT = 1234;
+    private static List<Utilisateur> utilisateurs = new ArrayList<>();
+    
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            System.out.println("Serveur démarré sur le port " + PORT);
+            
+            while (true) {
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("Nouvelle connexion entrante: " + clientSocket);
+                
+                ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
+                ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
+                
+                Utilisateur utilisateur = (Utilisateur) in.readObject();
+                boolean authentifie = false;
+                
+                for (Utilisateur u : utilisateurs) {
+                    if (u.getNom().equals(utilisateur.getNom())) {
+                        if (u.getMotDePasse().equals(utilisateur.getMotDePasse())) {
+                            authentifie = true;
+                            break;
+                        } else {
+                            out.writeObject("Mot de passe incorrect");
+                            break;
+                        }
+                    }
+                }
+                
+                if (!authentifie) {
+                    ajouterUtilisateur(utilisateur);
+                    out.writeObject("Inscription réussie");
+                } else {
+                    out.writeObject("Authentification réussie");
+                }
+                
+                in.close();
+                out.close();
+                clientSocket.close();
+            }
+        }
+    }
+    
+    public static void ajouterUtilisateur(Utilisateur utilisateur) {
+        utilisateurs.add(utilisateur);
+    }
+    
+    public static boolean supprimerUtilisateur(Utilisateur utilisateur) {
+        return utilisateurs.remove(utilisateur);
+    }
+    
+    public static boolean modifierMotDePasse(Utilisateur utilisateur, String nouveauMotDePasse) {
+        for (Utilisateur u : utilisateurs) {
+            if (u.equals(utilisateur)) {
+                u.setMotDePasse(nouveauMotDePasse);
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public static List<Utilisateur> getUtilisateurs() {
+        return utilisateurs;
+    }
+}
